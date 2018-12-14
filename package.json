@@ -42,7 +42,7 @@
     "express": "^4.16.3",
     "fastify": "^1.13.1",
     "handlebars": "^4.0.11",
-    "marko": "^4.13.6",
+    "marko": "^4.14.6",
     "mustache": "^3.0.0",
     "nunjucks": "^3.1.6",
     "pre-commit": "^1.2.2",
