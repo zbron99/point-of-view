@@ -5,7 +5,7 @@ const readFile = require('fs').readFile
 const resolve = require('path').resolve
 const join = require('path').join
 const HLRU = require('hashlru')
-const supportedEngines = ['ejs', 'nunjucks', 'pug', 'handlebars', 'marko', 'ejs-mate', 'mustache']
+const supportedEngines = ['ejs', 'nunjucks', 'edge', 'pug', 'handlebars', 'marko', 'ejs-mate', 'mustache']
 
 function fastifyView (fastify, opts, next) {
   if (!opts.engine) {
@@ -32,6 +32,7 @@ function fastifyView (fastify, opts, next) {
     handlebars: viewHandlebars,
     mustache: viewMustache,
     nunjucks: viewNunjucks,
+    edge: viewEdge,
     _default: view
   }
 
@@ -209,6 +210,19 @@ function fastifyView (fastify, opts, next) {
     env.render(join(templatesDir, page), data, (err, html) => {
       if (err) return this.send(err)
       this.header('Content-Type', 'text/html; charset=' + charset).send(html)
+    })
+  }
+
+  function viewEdge (page, data) {
+    if (!page) {
+      this.send(new Error('Missing page'))
+      return
+    }
+
+    page = getPage(page, 'edge')
+    readFile(join(templatesDir, page), 'utf8', (err, html) => {
+      if (err) return this.send(err);
+      this.header('Content-Type', 'text/html charset=' + charset).send(engine.renderString(html, data));
     })
   }
 
